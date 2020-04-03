@@ -1,0 +1,57 @@
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-comment"></span>Application de chat en temps réel
+        </div>
+        <div class="panel-body" id="chat">
+          <ul class="chat">
+            <div class="chat-body clear">
+              <div id="chat-content" class="row" style="height: 400px; overflow-y: auto; transform: rotate(180deg)">
+                <div *ngFor="let message of messages | async; let i = index" style="transform: rotate(180deg)">
+                  <div class="message" style="text-align: right">{{ message.createdAt | date: 'short' }}</div>
+                    <div *ngIf="message.User.username == 'ChatBot'; else notBot" >
+                      <span><strong style="color: red">{{ message.User.username }} : </strong> {{ message.content}}</span>
+                    </div>
+                  <ng-template #notBot>
+                    <span><strong style="color: blue">{{ message.User.username }} : </strong> {{ message.content}}</span>
+                  </ng-template>
+                  </div>
+              </div>
+            </div>
+          </ul>
+        </div>
+        <form name="messageForm" (ngSubmit)="sendMessage(f)" #f="ngForm">
+          <div class="panel-footer" *ngFor="let user of user">
+            <div class="input-group">
+              <input type="hidden" id="userId" class="form-control" name="userId" ngModel="{{ user.id }}">
+              <input id="content" type="text" class="form-control input-sm" name="content" placeholder="Ecrit ton message ici..." ngModel/>
+              <span class="input-group-btn">
+                <button class="btn btn-warning btn-sm" id="btn-chat" onclick="javascript:document.messageForm.content.value=''">Envoyer</button>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <h2>Connectés</h2>
+      <ul>
+        <div *ngFor="let connectedUser of connectedUsers | async; let i = index">
+          <li style="color: green">{{ connectedUser.username}}</li>
+        </div>
+      </ul>
+      <h2>Non Connectés</h2>
+      <ul>
+        <div *ngFor="let disconectedUser of disconnectedUsers | async; let i = index">
+          <li style="color: red">{{ disconectedUser.username}}</li>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
